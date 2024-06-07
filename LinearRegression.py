@@ -40,31 +40,6 @@ def sum_of_sqerrors(alpha: float, beta: float, x: Vector, y: Vector) -> float:
     return sum(error(alpha, beta, x_i, y_i) ** 2
                for x_i, y_i in zip(x, y))
 
-def dot(v: Vector, w: Vector) -> float:
-    """Computes v_1 * w_1 + ... + v_n * w_n"""
-    assert len(v) == len(w), "vectors must be same length"
-
-    return sum(v_i * w_i for v_i, w_i in zip(v, w))
-
-
-def least_squares_fit(x: Vector, y: Vector) -> Tuple[float, float]:
-    """
-    Given two vectors x and y,
-    find the least-squares values of alpha and beta
-    """
-    beta = correlation(x, y) * standard_deviation(y) / standard_deviation(x)
-    alpha = mean(y) - beta * mean(x)
-    return alpha, beta
-
-def sum_of_squares(v: Vector) -> float:
-    """Returns v_1 * v_1 + ... + v_n * v_n"""
-    return dot(v, v)
-
-
-alpha, beta = least_squares_fit(num_friends_good, daily_minutes_good)
-assert 22.9 < alpha < 23.0
-assert 0.9 < beta < 0.905
-
 
 def total_sum_of_squares(y: Vector) -> float:
     """the total squared variation of y_i's from their mean"""
@@ -79,6 +54,19 @@ def r_squared(alpha: float, beta: float, x: Vector, y: Vector) -> float:
     return 1.0 - (sum_of_sqerrors(alpha, beta, x, y) /
                   total_sum_of_squares(y))
 
+def least_squares_fit(x: Vector, y: Vector) -> Tuple[float, float]:
+    """
+    Given two vectors x and y,
+    find the least-squares values of alpha and beta
+    """
+    beta = correlation(x, y) * standard_deviation(y) / standard_deviation(x)
+    alpha = mean(y) - beta * mean(x)
+    return alpha, beta
+
+
+alpha, beta = least_squares_fit(num_friends_good, daily_minutes_good)
+assert 22.9 < alpha < 23.0
+assert 0.9 < beta < 0.905
 
 rsq = r_squared(alpha, beta, num_friends_good, daily_minutes_good)
 assert 0.328 < rsq < 0.330
